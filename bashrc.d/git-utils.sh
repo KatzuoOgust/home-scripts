@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Remove local branches that have been deleted on the remote
-git-remove-gone-branches() {
+git-clean-gone-branches() {
 	for branch in $(git for-each-ref --format '%(if:equals=gone)%(upstream:track,nobracket)%(then)%(refname:short)%(end)' refs/heads/)
 	do
 		echo "Removing branch $branch"
