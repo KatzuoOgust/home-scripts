@@ -78,3 +78,17 @@ git-remote-update-token() {
 		return 1
 	fi
 }
+
+# Clean up git repository (garbage collection, prune, optimize)
+git-cleanup() {
+	echo "Running git garbage collection..."
+	git gc --aggressive --prune=now
+	
+	echo "Pruning remote tracking branches..."
+	git remote prune origin
+	
+	echo "Cleaning up reflog..."
+	git reflog expire --expire=3.months.ago --all
+	
+	echo "✓ Git repository cleanup complete"
+}
