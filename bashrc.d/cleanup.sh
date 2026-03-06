@@ -1,7 +1,25 @@
 #!/bin/bash
 
+# Show available cleanup commands
+pc-cleanup() {
+	echo "Available cleanup commands:"
+	echo ""
+	echo "  pc-cleanup-docker               - Remove stopped containers, dangling images, unused volumes/networks"
+	echo "  pc-cleanup-docker-all           - Remove all unused Docker resources (including images)"
+	echo "  pc-cleanup-docker-system        - Docker system prune (all unused data)"
+	echo "  pc-cleanup-docker-system-all    - Docker system prune (including volumes and all images)"
+	echo "  pc-cleanup-npm                  - Clear npm cache"
+	echo "  pc-cleanup-pip                  - Purge pip cache"
+	echo "  pc-cleanup-dotnet               - Clear dotnet nuget cache"
+	echo "  pc-cleanup-flatpak              - Remove unused flatpak data"
+	echo "  pc-cleanup-dnf                  - Clean dnf cache and autoremove packages"
+	echo "  pc-cleanup-tmp                  - Delete temporary files older than 7 days"
+	echo "  pc-cleanup-all                  - Run all cleanup functions at once"
+	echo ""
+}
+
 # Clean old Docker resources
-docker-cleanup() {
+pc-cleanup-docker() {
 	echo "Removing stopped containers..."
 	docker container prune -f
 	
@@ -18,7 +36,7 @@ docker-cleanup() {
 }
 
 # Clean old Docker resources (including unused images)
-docker-cleanup-all() {
+pc-cleanup-docker-all() {
 	echo "Removing stopped containers..."
 	docker container prune -f
 	
@@ -35,49 +53,49 @@ docker-cleanup-all() {
 }
 
 # Docker system prune (removes all unused data)
-docker-system-prune() {
+pc-cleanup-docker-system() {
 	echo "Running docker system prune..."
 	docker system prune -f
 	echo "✓ Docker system prune complete"
 }
 
 # Docker system prune (including volumes)
-docker-system-prune-all() {
+pc-cleanup-docker-system-all() {
 	echo "Running docker system prune (including volumes)..."
 	docker system prune -a --volumes -f
 	echo "✓ Docker system prune complete (all unused resources + volumes)"
 }
 
 # Clean npm cache
-npm-cleanup() {
+pc-cleanup-npm() {
 	echo "Clearing npm cache..."
 	npm cache clean --force
 	echo "✓ npm cache cleaned"
 }
 
 # Clean pip cache
-pip-cleanup() {
+pc-cleanup-pip() {
 	echo "Clearing pip cache..."
 	pip cache purge
 	echo "✓ pip cache cleaned"
 }
 
 # Clean dotnet nuget cache
-dotnet-cleanup() {
+pc-cleanup-dotnet() {
 	echo "Clearing dotnet nuget cache..."
 	dotnet nuget locals all --clear
 	echo "✓ dotnet nuget cache cleaned"
 }
 
 # Clean flatpak unused data
-flatpak-cleanup() {
+pc-cleanup-flatpak() {
 	echo "Removing unused flatpak data..."
 	flatpak uninstall --unused -y
 	echo "✓ flatpak unused data removed"
 }
 
 # Clean system package cache (dnf)
-dnf-cleanup() {
+pc-cleanup-dnf() {
 	echo "Cleaning dnf cache..."
 	sudo dnf clean all
 	sudo dnf autoremove -y
@@ -85,41 +103,42 @@ dnf-cleanup() {
 }
 
 # Clean temporary files
-tmp-cleanup() {
+pc-cleanup-tmp() {
 	echo "Cleaning temporary files in /tmp..."
 	sudo find /tmp -type f -atime +7 -delete 2>/dev/null
 	echo "✓ Old temporary files cleaned"
 }
 
 # Clean all at once
-cleanup-all() {
+pc-cleanup-all() {
 	echo "=== Running full system cleanup ==="
 	
 	if command -v docker &> /dev/null; then
-		docker-cleanup
+		pc-cleanup-docker
 	fi
 	
 	if command -v npm &> /dev/null; then
-		npm-cleanup
+		pc-cleanup-npm
 	fi
 	
 	if command -v pip &> /dev/null; then
-		pip-cleanup
+		pc-cleanup-pip
 	fi
 	
 	if command -v dotnet &> /dev/null; then
-		dotnet-cleanup
+		pc-cleanup-dotnet
 	fi
 	
 	if command -v flatpak &> /dev/null; then
-		flatpak-cleanup
+		pc-cleanup-flatpak
 	fi
 	
 	if command -v dnf &> /dev/null; then
-		dnf-cleanup
+		pc-cleanup-dnf
 	fi
 	
-	tmp-cleanup
+	pc-cleanup-tmp
 	
 	echo "=== Full cleanup complete ==="
 }
+
