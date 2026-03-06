@@ -92,3 +92,26 @@ git-cleanup() {
 	
 	echo "✓ Git repository cleanup complete"
 }
+
+# Clean unstaged files and untracked files
+git-clean-unstaged() {
+	echo "This will remove all untracked files and revert unstaged changes."
+	echo ""
+	git status --short
+	echo ""
+	read -p "Continue? [y/N] " -n 1 -r
+	echo ""
+	
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		echo "Reverting unstaged changes..."
+		git restore .
+		
+		echo "Removing untracked files..."
+		git clean -fd
+		
+		echo "✓ Unstaged files cleaned"
+	else
+		echo "✗ Operation cancelled"
+		return 1
+	fi
+}
