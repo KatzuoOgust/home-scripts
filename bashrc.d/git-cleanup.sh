@@ -1,7 +1,17 @@
 #!/bin/bash
 
+git-cleanup() {
+	echo "Available cleanup commands:"
+	echo ""
+	echo "  git-cleanup-gone-branches  - Remove local branches that have been deleted on the remote"
+	echo "  git-cleanup-repo           - Clean up git repository (garbage collection, prune, optimize"
+	echo "  git-cleanup-unstage        - Clean unstaged files and untracked files"
+	echo ""
+}
+
+
 # Remove local branches that have been deleted on the remote
-git-clean-gone-branches() {
+git-cleanup-gone-branches() {
 	for branch in $(git for-each-ref --format '%(if:equals=gone)%(upstream:track,nobracket)%(then)%(refname:short)%(end)' refs/heads/)
 	do
 		echo "Removing branch $branch"
@@ -10,7 +20,7 @@ git-clean-gone-branches() {
 }
 
 # Clean up git repository (garbage collection, prune, optimize)
-git-clean-repo() {
+git-cleanup-repo() {
 	echo "Running git garbage collection..."
 	git gc --aggressive --prune=now
 	
@@ -24,7 +34,7 @@ git-clean-repo() {
 }
 
 # Clean unstaged files and untracked files
-git-clean-unstaged() {
+git-cleanup-unstaged() {
 	echo "This will remove all untracked files and revert unstaged changes."
 	echo ""
 	git status --short
