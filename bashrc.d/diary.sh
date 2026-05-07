@@ -78,14 +78,16 @@ EOF
 }
 
 diary-add() {
+	[[ "$1" == "-h" || "$1" == "--help" ]] && { diary-add-usage; return 0; }
 	_diary_config || return 1
-	
+
+	local entry_text
 	if [[ $# -eq 0 ]]; then
-		diary-add-usage >&2
-		return 1
+		read -r -p "Entry: " entry_text
+		[[ -z "$entry_text" ]] && return 0
+	else
+		entry_text="$*"
 	fi
-	
-	local entry_text="$*"
 	local today=$(date +%Y-%m-%d)
 	local month=$(date +%Y-%m)
 	local diary_file="$DIARY_DIR/${month}.md"
@@ -120,12 +122,8 @@ EOF
 }
 
 diary-cat() {
+	[[ "$1" == "-h" || "$1" == "--help" ]] && { diary-cat-usage; return 0; }
 	_diary_config || return 1
-	
-	if [[ $# -eq 0 ]]; then
-		diary-cat-usage >&2
-		return 1
-	fi
 	
 	# Build patterns array from all arguments
 	local -a patterns=()
