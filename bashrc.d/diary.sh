@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+#
+# diary.sh — Shell functions for adding and querying dated diary entries.
+#
+# Sourced by bashrc (not executed). Reads DIARY_DIR from ~/.config/diary.conf.
+# Entries are stored as one line per record in monthly Markdown files:
+#   [YYYY-MM-DD] free text +project @tag
+#
+# Public functions:
+#   diary           Print top-level usage
+#   diary-add       Append a new entry to the current month's file
+#   diary-cat       List entries, optionally filtered by date / +project / @tag
 
 _diary_config() {
 	local config_file="${HOME}/.config/diary.conf"
@@ -78,7 +89,7 @@ EOF
 }
 
 diary-add() {
-	[[ "$1" == "-h" || "$1" == "--help" ]] && { diary-add-usage; return 0; }
+	[[ "${1:-}" == "-h" || "${1:-}" == "--help" ]] && { diary-add-usage; return 0; }
 	_diary_config || return 1
 
 	local entry_text
@@ -122,7 +133,7 @@ EOF
 }
 
 diary-cat() {
-	[[ "$1" == "-h" || "$1" == "--help" ]] && { diary-cat-usage; return 0; }
+	[[ "${1:-}" == "-h" || "${1:-}" == "--help" ]] && { diary-cat-usage; return 0; }
 	_diary_config || return 1
 	
 	# Build patterns array from all arguments
