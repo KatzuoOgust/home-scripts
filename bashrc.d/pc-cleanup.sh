@@ -1,4 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# pc-cleanup.sh — system cleanup helpers (sourced into the interactive shell).
+#
+# Defines pc-cleanup-* functions to prune Docker, package manager caches,
+# flatpak data, dnf state, and old /tmp files. `pc-cleanup` lists what is
+# available; `pc-cleanup-all` runs everything whose tooling is installed.
 
 # Show available cleanup commands
 pc-cleanup() {

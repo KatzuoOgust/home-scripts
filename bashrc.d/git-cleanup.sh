@@ -1,22 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# git-cleanup.sh — git repository cleanup helpers (sourced into the interactive shell).
+#
+# Defines git-cleanup-* functions to drop branches whose upstream is gone,
+# garbage-collect and prune the repo, and reset working-tree changes.
+# `git-cleanup` lists what is available.
 
 git-cleanup() {
 	echo "Available cleanup commands:"
 	echo ""
 	echo "  git-cleanup-gone-branches  - Remove local branches that have been deleted on the remote"
-	echo "  git-cleanup-repo           - Clean up git repository (garbage collection, prune, optimize"
-	echo "  git-cleanup-unstage        - Clean unstaged files and untracked files"
+	echo "  git-cleanup-repo           - Clean up git repository (garbage collection, prune, optimize)"
+	echo "  git-cleanup-unstaged       - Clean unstaged files and untracked files"
 	echo ""
 }
 
 
 # Remove local branches that have been deleted on the remote
 git-cleanup-gone-branches() {
-	for branch in $(git for-each-ref --format '%(if:equals=gone)%(upstream:track,nobracket)%(then)%(refname:short)%(end)' refs/heads/)
-	do
+	local branch
+	while IFS= read -r branch; do
+		[[ -z "$branch" ]] && continue
 		echo "Removing branch $branch"
-		git branch -D $branch
-	done
+		git branch -D "$branch"
+	done < <(git for-each-ref --format '%(if:equals=gone)%(upstream:track,nobracket)%(then)%(refname:short)%(end)' refs/heads/)
 }
 
 # Clean up git repository (garbage collection, prune, optimize)
